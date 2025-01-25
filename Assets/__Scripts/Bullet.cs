@@ -11,7 +11,7 @@ public class Bullet : MonoBehaviour
     {
         // Obtener la posición del ratón en el mundo
         Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(
-            new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.nearClipPlane)
+            new Vector3(Input.mousePosition.x, Input.mousePosition.y, -Camera.main.transform.position.z)
         );
 
         // Calcular la dirección inicial hacia el ratón
@@ -22,5 +22,8 @@ public class Bullet : MonoBehaviour
     {
         // Mover el objeto en la dirección calculada al inicio
         transform.Translate(moveDirection * bulletSpeed * Time.deltaTime, Space.World);
+        
+        // Destruir el objeto a los 2 segundos
+        Destroy(gameObject, 2);
     }
 }

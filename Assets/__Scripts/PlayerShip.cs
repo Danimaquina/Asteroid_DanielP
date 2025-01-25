@@ -9,12 +9,15 @@ public class PlayerShip : MonoBehaviour
     public float moveSpeed = 10f; // Velocidad de movimiento
     public GameObject bulletPrefab;
     public Transform bulletAnchor;   // Referencia al objeto vacío donde se crearán las balas
+    private Rigidbody rb; 
+
 
 
 
     // Start is called before the first frame update
     void Start()
     {
+        rb = GetComponent<Rigidbody>();
 
     }
 
@@ -22,13 +25,16 @@ public class PlayerShip : MonoBehaviour
     void Update()
     {
         // Movimiento hacia adelante y hacia atrás
-        float VerticalmoveInput = CrossPlatformInputManager.GetAxis("Vertical"); // W/S o Flecha Arriba/Abajo o táctil
-        transform.Translate(Vector3.up * VerticalmoveInput * moveSpeed * Time.deltaTime);
-        
-        float HorizontalmoveInput = CrossPlatformInputManager.GetAxis("Horizontal"); // A/D o Flecha Izquierda/Derecha o táctil
-        transform.Translate(Vector3.right * HorizontalmoveInput * moveSpeed * Time.deltaTime);
+        float verticalMoveInput = CrossPlatformInputManager.GetAxis("Vertical"); // W/S o Flecha Arriba/Abajo o táctil
+        float horizontalMoveInput = CrossPlatformInputManager.GetAxis("Horizontal"); // A/D o Flecha Izquierda/Derecha o táctil
 
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        // Calcular la dirección del movimiento
+        Vector2 movement = new Vector2(horizontalMoveInput, verticalMoveInput);
+
+        // Aplicar la velocidad al Rigidbody2D
+        rb.velocity = movement * moveSpeed;
+
+        if (Input.GetKeyDown(KeyCode.Mouse0) || Input.GetButtonDown("Fire1"))
         {
             GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
             
