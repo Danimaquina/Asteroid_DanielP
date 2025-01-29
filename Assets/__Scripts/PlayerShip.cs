@@ -10,9 +10,7 @@ public class PlayerShip : MonoBehaviour
     public GameObject bulletPrefab;
     public Transform bulletAnchor;   // Referencia al objeto vacío donde se crearán las balas
     private Rigidbody rb; 
-
-
-
+    
 
     // Start is called before the first frame update
     void Start()
