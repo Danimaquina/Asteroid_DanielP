@@ -1,29 +1,39 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(OffScreenWrapper))]
 public class Bullet : MonoBehaviour
 {
-    public float bulletSpeed = 5f; // Velocidad del objeto
-    private Vector3 moveDirection; // Dirección del movimiento
+    static private Transform _BULLET_ANCHOR;
+    static Transform BULLET_ANCHOR {
+        get {
+            if (_BULLET_ANCHOR == null) {
+                GameObject go = new GameObject("BulletAnchor");
+                _BULLET_ANCHOR = go.transform;
+            }
+            return _BULLET_ANCHOR;
+        }
+    }
+
+    public float    bulletSpeed = 20;
+    public float    lifeTime = 2;
 
     void Start()
     {
-        // Obtener la posición del ratón en el mundo
-        Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(
-            new Vector3(Input.mousePosition.x, Input.mousePosition.y, -Camera.main.transform.position.z)
-        );
+        transform.SetParent(BULLET_ANCHOR, true);
 
-        // Calcular la dirección inicial hacia el ratón
-        moveDirection = (mouseWorldPosition - transform.position).normalized;
+        // Set Bullet to self-destruct in lifeTime seconds
+        Invoke("DestroyMe", lifeTime);
+
+        // Set the velocity of the Bullet
+        GetComponent<Rigidbody>().velocity = transform.forward * bulletSpeed;
     }
 
-    void Update()
+    void DestroyMe()
     {
-        // Mover el objeto en la dirección calculada al inicio
-        transform.Translate(moveDirection * bulletSpeed * Time.deltaTime, Space.World);
-        
-        // Destruir el objeto a los 2 segundos
-        Destroy(gameObject, 2);
+        Destroy(gameObject);
     }
+    
 }
