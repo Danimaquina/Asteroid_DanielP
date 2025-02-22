@@ -5,97 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2d78bbe7-e124-44b6-a36d-c0325d123b7c" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Asteroid_DanielP/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Bullet.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Bullet.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/PlayerShip.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/PlayerShip.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Prefab Ship Parts/asteroids_ship0.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Prefab Ship Parts/asteroids_ship0.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Prefab Ship Parts/asteroids_turret0.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Prefab Ship Parts/asteroids_turret0.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/BillingMode.json.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/BillingMode.json.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/_Scenes/_Scene_0.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Scenes/_Scene_0.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/_Scenes/_Scene_0.unity.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Scenes/_Scene_0.unity.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/__Scripts/Bullet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/__Scripts/Bullet.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/__Scripts/Bullet.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/__Scripts/Bullet.cs.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/__Scripts/OffScreenWrapper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/__Scripts/OffScreenWrapper.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/__Scripts/OffScreenWrapper.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/__Scripts/OffScreenWrapper.cs.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/__Scripts/PlayerShip.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/__Scripts/PlayerShip.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/__Scripts/PlayerShip.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/__Scripts/PlayerShip.cs.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/__Scripts/ScaleSpriteToFillOrthographicCamera.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/__Scripts/ScaleSpriteToFillOrthographicCamera.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/__Scripts/ScaleSpriteToFillOrthographicCamera.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/__Scripts/ScaleSpriteToFillOrthographicCamera.cs.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/__Scripts/ScreenBounds.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/__Scripts/ScreenBounds.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/__Scripts/ScreenBounds.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/__Scripts/ScreenBounds.cs.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/__Scripts/TurretRotator.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/__Scripts/TurretRotator.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/__Scripts/Vector3Extensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/__Scripts/Vector3Extensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/__Scripts/Vector3Extensions.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/__Scripts/Vector3Extensions.cs.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Packages/packages-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Packages/packages-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/._Prefabs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/._Standard Assets.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/._Textures &amp; Materials.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/.__Scenes.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/.___Scripts.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Prefabs/._Bullet.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Prefabs/._PlayerShip.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Prefabs/._Prefab Ship Parts.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Prefabs/Prefab Ship Parts/._asteroids_ship0.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Prefabs/Prefab Ship Parts/._asteroids_turret0.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/._CrossPlatformInput.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/._Editor.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/._Fonts.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/CrossPlatformInput/._CrossPlatformInputGuidelines.txt.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/CrossPlatformInput/._Prefabs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/CrossPlatformInput/._Scripts.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/CrossPlatformInput/._Sprites.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/CrossPlatformInput/Prefabs/._CarTiltControls.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/CrossPlatformInput/Prefabs/._DualTouchControls.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/CrossPlatformInput/Prefabs/._MobileAircraftControls.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/CrossPlatformInput/Prefabs/._MobileSingleStickControl.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/CrossPlatformInput/Prefabs/._MobileTiltControlRig.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/CrossPlatformInput/Scripts/._AxisTouchButton.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/CrossPlatformInput/Scripts/._ButtonHandler.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/CrossPlatformInput/Scripts/._CrossPlatformInputManager.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/CrossPlatformInput/Scripts/._InputAxisScrollbar.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/CrossPlatformInput/Scripts/._Joystick.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/CrossPlatformInput/Scripts/._MobileControlRig.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/CrossPlatformInput/Scripts/._PlatformSpecific.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/CrossPlatformInput/Scripts/._TiltInput.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/CrossPlatformInput/Scripts/._TouchPad.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/CrossPlatformInput/Scripts/._VirtualInput.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/CrossPlatformInput/Scripts/PlatformSpecific/._MobileInput.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/CrossPlatformInput/Scripts/PlatformSpecific/._StandaloneInput.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/CrossPlatformInput/Sprites/._ButtonAcceleratorOverSprite.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/CrossPlatformInput/Sprites/._ButtonAcceleratorUpSprite.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/CrossPlatformInput/Sprites/._ButtonArrowOverSprite.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/CrossPlatformInput/Sprites/._ButtonArrowUpSprite.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/CrossPlatformInput/Sprites/._ButtonBrakeOverSprite.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/CrossPlatformInput/Sprites/._ButtonBrakeUpSprite.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/CrossPlatformInput/Sprites/._ButtonCameraCycleUpSprite.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/CrossPlatformInput/Sprites/._ButtonResetSprite.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/CrossPlatformInput/Sprites/._ButtonSpacebarSprite.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/CrossPlatformInput/Sprites/._ButtonThumbstickOverSprite.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/CrossPlatformInput/Sprites/._ButtonThumbstickUpSprite.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/CrossPlatformInput/Sprites/._ButtonTimescaleFullUpSprite.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/CrossPlatformInput/Sprites/._ButtonTimescaleSlowUpSprite.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/CrossPlatformInput/Sprites/._SliderBackgroundSprite.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/CrossPlatformInput/Sprites/._SliderHandleSprite.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/CrossPlatformInput/Sprites/._TouchpadSprite.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/Editor/._CrossPlatformInput.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/Editor/CrossPlatformInput/._CrossPlatformInputInitialize.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/Fonts/._OpenSans.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/Fonts/._Unipix.ttf.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/Fonts/OpenSans/._License!.txt.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/Fonts/OpenSans/._OpenSansBold.ttf.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/Fonts/OpenSans/._OpenSansLight.ttf.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/Fonts/OpenSans/._OpenSansRegular.ttf.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Standard Assets/Fonts/OpenSans/._OpenSansSemibold.ttf.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Textures &amp; Materials/._Bullet Mat.mat.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Textures &amp; Materials/._ShipBody0_Material.mat.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Textures &amp; Materials/._ShipTurret0_Material.mat.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Textures &amp; Materials/._Space_Background.psd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__MACOSX/assets/Textures &amp; Materials/._Space_Background.psd.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Asteroid_DanielP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Asteroid_DanielP/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/Scriptable Object Instances/AsteroidsSO.asset" beforeDir="false" afterPath="$PROJECT_DIR$/assets/Scriptable Object Instances/AsteroidsSO.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/__Scripts/AsteraX.cs" beforeDir="false" afterPath="$PROJECT_DIR$/assets/__Scripts/AsteraX.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/__Scripts/Asteroid.cs" beforeDir="false" afterPath="$PROJECT_DIR$/assets/__Scripts/Asteroid.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -182,6 +95,7 @@
       <workItem from="1740139653147" duration="279000" />
       <workItem from="1740140058225" duration="851000" />
       <workItem from="1740145338395" duration="14695000" />
+      <workItem from="1740221601507" duration="5706000" />
     </task>
     <servers />
   </component>

@@ -124,63 +124,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1001 &303544216
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 1029653053436338, guid: 1293b0763d7d344e0b908c097078ac09, type: 3}
-      propertyPath: m_Name
-      value: Asteroid_A
-      objectReference: {fileID: 0}
-    - target: {fileID: 4031032316892020, guid: 1293b0763d7d344e0b908c097078ac09, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 2.4389725
-      objectReference: {fileID: 0}
-    - target: {fileID: 4031032316892020, guid: 1293b0763d7d344e0b908c097078ac09, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.51
-      objectReference: {fileID: 0}
-    - target: {fileID: 4031032316892020, guid: 1293b0763d7d344e0b908c097078ac09, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.28
-      objectReference: {fileID: 0}
-    - target: {fileID: 4031032316892020, guid: 1293b0763d7d344e0b908c097078ac09, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 4031032316892020, guid: 1293b0763d7d344e0b908c097078ac09, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 4031032316892020, guid: 1293b0763d7d344e0b908c097078ac09, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4031032316892020, guid: 1293b0763d7d344e0b908c097078ac09, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4031032316892020, guid: 1293b0763d7d344e0b908c097078ac09, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4031032316892020, guid: 1293b0763d7d344e0b908c097078ac09, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4031032316892020, guid: 1293b0763d7d344e0b908c097078ac09, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 1293b0763d7d344e0b908c097078ac09, type: 3}
 --- !u!1 &624165547
 GameObject:
   m_ObjectHideFlags: 0
@@ -342,7 +285,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AsteroidsSO: {fileID: 11400000, guid: 2c092a8a6df06e141bca1e8f4da55a93, type: 2}
-  asteroids: []
+  asteroids:
+  - {fileID: 2303441705727297544, guid: 1293b0763d7d344e0b908c097078ac09, type: 3}
+  - {fileID: 6389027265018159929, guid: 5513cde93bb3343768ced35921a9c3c2, type: 3}
+  - {fileID: 1210109946244770218, guid: a6d3ccfc58a1f41368479aabb6050561, type: 3}
+  numeroAsteroids: 5
 --- !u!1 &1063172399
 GameObject:
   m_ObjectHideFlags: 0
@@ -575,12 +522,12 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Radius: 0.7644386
+  m_Center: {x: 0, y: 0, z: -0.051963806}
 --- !u!114 &1199415307
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -903,4 +850,3 @@ SceneRoots:
   - {fileID: 1063172401}
   - {fileID: 1199415308}
   - {fileID: 1350387320}
-  - {fileID: 303544216}
