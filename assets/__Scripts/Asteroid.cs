@@ -34,7 +34,7 @@ public class Asteroid : MonoBehaviour
         // Solo ejecutar la mitosis si es el asteroide inicial
         if (isTheBigPapa)
         {
-            Mitosis(prefab, parentPosition, initialSize);
+            Mitosis(parentPosition, initialSize);
         }
         impulso();
     }
@@ -46,21 +46,18 @@ public class Asteroid : MonoBehaviour
 
     void impulso()
     {
-        // Obtener el Rigidbody del asteroide
         var rigidbody = GetComponent<Rigidbody>();
         if (rigidbody != null)
         {
-            // Calcular una velocidad aleatoria dentro del rango [minVel, maxVel]
             float velocidad = Random.Range(minVel, maxVel);
 
             // Calcular una dirección aleatoria en 3D (en una esfera)
             Vector3 direccion = Random.onUnitSphere;
 
-            // Aplicar la velocidad en la dirección calculada
             rigidbody.velocity = direccion * velocidad;
 
             // Aplicar una rotación aleatoria, pero más lenta para asteroides más grandes
-            float sizeFactor = transform.localScale.x; // Cuanto más grande, más lento gira
+            float sizeFactor = transform.localScale.x;
             rigidbody.angularVelocity = Random.insideUnitSphere * maxAngularVel / sizeFactor;
         }
     }
@@ -81,8 +78,10 @@ public class Asteroid : MonoBehaviour
     }
 
     // Método para generar asteroides hijos
-    void Mitosis(GameObject prefab, Transform parentPosition, int currentSize)
+    void Mitosis(Transform parentPosition, int currentSize)
     {
+        GameObject prefab = AsteroidsScriptableObject.S.GetAsteroidPrefab();
+
         if (currentSize <= 1)
         {
             // Si el tamaño es 1, no generamos más asteroides
@@ -98,9 +97,13 @@ public class Asteroid : MonoBehaviour
             GameObject newAsteroid = Instantiate(prefab, parentPosition.position + randomOffset, Random.rotation);
             newAsteroid.transform.SetParent(parentPosition);
 
-            // Ajustar la escala del nuevo asteroide (hacerlo más pequeño)
-            int childSize = currentSize - 1; // Reducir el tamaño en 1
+            // Ajustar la escala del nuevo asteroide 
+            int childSize = currentSize - 1; 
             newAsteroid.transform.localScale = Vector3.one * childSize * asteroidScale;
+            
+            string daddyName = newAsteroid.transform.parent.name;
+            
+            newAsteroid.name = daddyName + "-" + i;
 
             // Desactivar el componente offScreenWrapper
             var offScreenWrapper = newAsteroid.GetComponent<OffScreenWrapper>();
@@ -116,22 +119,22 @@ public class Asteroid : MonoBehaviour
                 rigidbody.isKinematic = true;
             }
 
-            // Activar el componente Collider
+            // Desactovar el componente Collider
             var collider = newAsteroid.GetComponent<Collider>();
             if (collider != null)
             {
                 collider.enabled = false;
             }
 
-            // Marcar el nuevo asteroide como no inicial (para evitar que ejecute la mitosis)
+            // Marcar el nuevo asteroide como no inicial para que no haga la mitosis
             var asteroidScript = newAsteroid.GetComponent<Asteroid>();
             if (asteroidScript != null)
             {
                 asteroidScript.isTheBigPapa = false;
             }
 
-            // Llamar a la mitosis para el nuevo asteroide con un tamaño reducido
-            Mitosis(prefab, newAsteroid.transform, childSize);
+            // Llamar a la mitosis para la creacion de los nietos 
+            Mitosis(newAsteroid.transform, childSize);
         }
     }
 
@@ -152,14 +155,14 @@ public class Asteroid : MonoBehaviour
             // Liberar al hijo del padre
             child.SetParent(null);
 
-            // Activar el Rigidbody si es necesario
+            // Activar el Rigidbody 
             var rigidbody = child.GetComponent<Rigidbody>();
             if (rigidbody != null)
             {
                 rigidbody.isKinematic = false;
 
                 // Aumentar la probabilidad de velocidades más altas para asteroides más pequeños
-                float factorTamaño = 1f / child.localScale.x; // Cuanto más pequeño, mayor será el factor
+                float factorTamaño = 1f / child.localScale.x;
                 float velocidad = Random.Range(minVel * factorTamaño, maxVel * factorTamaño);
 
                 // Calcular una dirección opuesta para cada par de hijos
@@ -173,14 +176,14 @@ public class Asteroid : MonoBehaviour
                 rigidbody.angularVelocity = Random.insideUnitSphere * maxAngularVel / sizeFactor;
             }
 
-            // Activar el Collider si es necesario
+            // Activar el Collider 
             var collider = child.GetComponent<Collider>();
             if (collider != null)
             {
                 collider.enabled = true;
             }
 
-            // Activar el OffScreenWrapper si es necesario
+            // Activar el OffScreenWrapper 
             var offScreenWrapper = child.GetComponent<OffScreenWrapper>();
             if (offScreenWrapper != null)
             {

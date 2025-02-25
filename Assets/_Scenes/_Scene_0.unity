@@ -285,11 +285,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AsteroidsSO: {fileID: 11400000, guid: 2c092a8a6df06e141bca1e8f4da55a93, type: 2}
-  asteroids:
-  - {fileID: 2303441705727297544, guid: 1293b0763d7d344e0b908c097078ac09, type: 3}
-  - {fileID: 6389027265018159929, guid: 5513cde93bb3343768ced35921a9c3c2, type: 3}
-  - {fileID: 1210109946244770218, guid: a6d3ccfc58a1f41368479aabb6050561, type: 3}
-  numeroAsteroids: 5
+  numeroAsteroids: 3
+  asteroids: []
 --- !u!1 &1063172399
 GameObject:
   m_ObjectHideFlags: 0
