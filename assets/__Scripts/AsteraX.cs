@@ -1,4 +1,5 @@
-﻿//#define DEBUG_AsteraX_LogMethods
+﻿// Definición opcional para activar logs de depuración
+//#define DEBUG_AsteraX_LogMethods
 
 using System.Collections;
 using System.Collections.Generic;
@@ -6,41 +7,33 @@ using UnityEngine;
 
 public class AsteraX : MonoBehaviour
 {
-    // Private Singleton-style instance. Accessed by static property S later in script
+    // Instancia Singleton privada. Se accede a través de la propiedad estática S
     static private AsteraX _S;
 
-    static List<Asteroid>           ASTEROIDS;
-    static List<Bullet>             BULLETS;
+    // Listas estáticas para almacenar asteroides y balas en el juego
+    static List<Asteroid> ASTEROIDS;
+    static List<Bullet> BULLETS;
     
+    // Distancia mínima de los asteroides con respecto a la nave del jugador
     const float MIN_ASTEROID_DIST_FROM_PLAYER_SHIP = 5;
 
-
-    // System.Flags changes how eGameStates are viewed in the Inspector and lets multiple 
-    //  values be selected simultaneously (similar to how Physics Layers are selected).
-    // It's only valid for the game to ever be in one state, but I've added System.Flags
-    //  here to demonstrate it and to make the ActiveOnlyDuringSomeGameStates script easier
-    //  to view and modify in the Inspector.
-    // When you use System.Flags, you still need to set each enum value so that it aligns 
-    //  with a power of 2. You can also define enums that combine two or more values,
-    //  for example the all value below that combines all other possible values.
+    // Enumeración para definir los diferentes estados del juego
+    // Se usa System.Flags para permitir combinaciones de valores en el Inspector
     [System.Flags]
     public enum eGameState
     {
-        // Decimal      // Binary
-        none = 0,       // 00000000
-        mainMenu = 1,   // 00000001
-        preLevel = 2,   // 00000010
-        level = 4,      // 00000100
-        postLevel = 8,  // 00001000
-        gameOver = 16,  // 00010000
-        all = 0xFFFFFFF // 11111111111111111111111111111111
+        none = 0,       // Sin estado
+        mainMenu = 1,   // Menú principal
+        preLevel = 2,   // Antes de iniciar el nivel
+        level = 4,      // Durante el nivel
+        postLevel = 8,  // Después de completar el nivel
+        gameOver = 16,  // Fin del juego
+        all = 0xFFFFFFF // Todos los estados posibles
     }
 
-
-    [Header("Set in Inspector")]
-    [Tooltip("This sets the AsteroidsScriptableObject to be used throughout the game.")]
+    [Header("Configuración en el Inspector")]
+    [Tooltip("Este objeto define las configuraciones de los asteroides.")]
     public AsteroidsScriptableObject asteroidsSO;
-
 
     private void Awake()
     {
@@ -48,9 +41,8 @@ public class AsteraX : MonoBehaviour
         Debug.Log("AsteraX:Awake()");
 #endif
 
-        S = this;
+        S = this; // Asigna la instancia del Singleton
     }
-
 
     void Start()
     {
@@ -60,23 +52,24 @@ public class AsteraX : MonoBehaviour
 
         ASTEROIDS = new List<Asteroid>();
         
-        // Spawn the parent Asteroids, child Asteroids are taken care of by them
+        // Genera 3 asteroides principales
         for (int i = 0; i < 3; i++)
         {
             SpawnParentAsteroid(i);
         }
     }
 
-
+    // Método para generar un asteroide principal
     void SpawnParentAsteroid(int i)
     {
 #if DEBUG_AsteraX_LogMethods
-        Debug.Log("AsteraX:SpawnParentAsteroid("+i+")");
+        Debug.Log("AsteraX:SpawnParentAsteroid(" + i + ")");
 #endif
 
-        Asteroid ast = Asteroid.SpawnAsteroid();
+        Asteroid ast = Asteroid.SpawnAsteroid(); // Crea una nueva instancia de asteroide
         ast.gameObject.name = "Asteroid_" + i.ToString("00");
-        // Find a good location for the Asteroid to spawn
+        
+        // Busca una posición adecuada para el asteroide, evitando que esté demasiado cerca del jugador
         Vector3 pos;
         do
         {
@@ -84,28 +77,19 @@ public class AsteraX : MonoBehaviour
         } while ((pos - PlayerShip.POSITION).magnitude < MIN_ASTEROID_DIST_FROM_PLAYER_SHIP);
 
         ast.transform.position = pos;
-        ast.size = asteroidsSO.initialSize;
+        ast.size = asteroidsSO.initialSize; // Asigna el tamaño inicial del asteroide
     }
 
+    // ---------------- Sección Estática ---------------- //
 
-
-    // ---------------- Static Section ---------------- //
-
-    /// <summary>
-    /// <para>This static public property provides some protection for the Singleton _S.</para>
-    /// <para>get {} does return null, but throws an error first.</para>
-    /// <para>set {} allows overwrite of _S by a 2nd instance, but throws an error first.</para>
-    /// <para>Another advantage of using a property here is that it allows you to place
-    /// a breakpoint in the set clause and then look at the call stack if you fear that 
-    /// something random is setting your _S value.</para>
-    /// </summary>
+    // Propiedad estática para acceder al Singleton con protección adicional
     static private AsteraX S
     {
         get
         {
             if (_S == null)
             {
-                Debug.LogError("AsteraX:S getter - Attempt to get value of S before it has been set.");
+                Debug.LogError("AsteraX:S getter - Intento de acceder a S antes de que esté inicializado.");
                 return null;
             }
             return _S;
@@ -114,13 +98,13 @@ public class AsteraX : MonoBehaviour
         {
             if (_S != null)
             {
-                Debug.LogError("AsteraX:S setter - Attempt to set S when it has already been set.");
+                Debug.LogError("AsteraX:S setter - Intento de sobrescribir S cuando ya está asignado.");
             }
             _S = value;
         }
     }
 
-
+    // Propiedad estática para acceder a la configuración de los asteroides
     static public AsteroidsScriptableObject AsteroidsSO
     {
         get
@@ -133,13 +117,16 @@ public class AsteraX : MonoBehaviour
         }
     }
     
-	static public void AddAsteroid(Asteroid asteroid)
+    // Agrega un asteroide a la lista si no está ya presente
+    static public void AddAsteroid(Asteroid asteroid)
     {
         if (ASTEROIDS.IndexOf(asteroid) == -1)
         {
             ASTEROIDS.Add(asteroid);
         }
     }
+
+    // Elimina un asteroide de la lista si está presente
     static public void RemoveAsteroid(Asteroid asteroid)
     {
         if (ASTEROIDS.IndexOf(asteroid) != -1)
@@ -147,5 +134,4 @@ public class AsteraX : MonoBehaviour
             ASTEROIDS.Remove(asteroid);
         }
     }
-
 }
