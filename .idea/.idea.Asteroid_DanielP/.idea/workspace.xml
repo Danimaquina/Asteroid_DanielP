@@ -6,9 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="a349dcaf-c430-4a11-b1c1-d2cc7b5e6cf7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Asteroid_DanielP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Asteroid_DanielP/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/__Scripts/EnumFlagsAttributePropertyDrawer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/__Scripts/EnumFlagsAttributePropertyDrawer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/__Scripts/AsteraX.cs" beforeDir="false" afterPath="$PROJECT_DIR$/assets/__Scripts/AsteraX.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/__Scripts/Asteroid.cs" beforeDir="false" afterPath="$PROJECT_DIR$/assets/__Scripts/Asteroid.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -87,7 +84,7 @@
       <updated>1741690890256</updated>
       <workItem from="1741690892245" duration="1293000" />
       <workItem from="1741692306461" duration="100000" />
-      <workItem from="1741692732659" duration="1254000" />
+      <workItem from="1741692732659" duration="2696000" />
     </task>
     <servers />
   </component>
