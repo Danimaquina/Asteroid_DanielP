@@ -17,7 +17,7 @@ public class AsteroidsScriptableObject : ScriptableObject
 	public float        maxVel = 10;
     public float        maxAngularVel = 10;
 	public int          initialSize = 3;
-	public float        asteroidScale = 0.5f;
+	public float        asteroidScale = 0.75f;
     public int          numSmallerAsteroidsToSpawn = 2;
     public int[]        pointsForAsteroidSize = {0, 400, 200, 100};
 
@@ -28,11 +28,6 @@ public class AsteroidsScriptableObject : ScriptableObject
     {
         int ndx = Random.Range(0, asteroidPrefabs.Length);
         return asteroidPrefabs[ndx];
-    }
-    
-    public (float, float, float, int, float, int, int[]) GetParameters()
-    {
-        return (minVel, maxVel, maxAngularVel, initialSize, asteroidScale, numSmallerAsteroidsToSpawn, pointsForAsteroidSize);
     }
         
 }

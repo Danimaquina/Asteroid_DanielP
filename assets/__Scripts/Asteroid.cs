@@ -1,197 +1,231 @@
-using System;
+﻿// These were used to test a case where some Asteroids were getting lost off screen.
+//#define DEBUG_Asteroid_TestOOBVel 
+//#define DEBUG_Asteroid_ShotOffscreenDebugLines
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
+#if DEBUG_Asteroid_TestOOBVel
+using UnityEditor;
+#endif
+
+[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(OffScreenWrapper))]
 public class Asteroid : MonoBehaviour
 {
-    private float minVel;
-    private float maxVel;
-    private float maxAngularVel;
-    private int initialSize;
-    private float asteroidScale;
-    private int numSmallerAsteroidsToSpawn;
+    [Header("Set Dynamically")]
+    public int          size = 3;
+    public bool         immune = false;
 
-    // Variable para controlar si este asteroide es el padre inicial
-    private bool isTheBigPapa = true;
+    Rigidbody           rigid; // protected
+    OffScreenWrapper    offScreenWrapper;
 
-    // Start is called before the first frame update
+#if DEBUG_Asteroid_ShotOffscreenDebugLines
+    [Header("ShotOffscreenDebugLines")]
+	bool                trackOffscreen;
+	Vector3             trackOffscreenOrigin;
+#endif
+    private void Awake()
+    {
+        rigid = GetComponent<Rigidbody>();
+        offScreenWrapper = GetComponent<OffScreenWrapper>();
+    }
+
+    // Use this for initialization
     void Start()
     {
-        // Obtenemos los parámetros del ScriptableObject
-        var parameters = AsteroidsScriptableObject.S.GetParameters();
-        GameObject prefab = AsteroidsScriptableObject.S.GetAsteroidPrefab();
-        Transform parentPosition = gameObject.transform;
+        AsteraX.AddAsteroid(this);
 
-        minVel = parameters.Item1;
-        maxVel = parameters.Item2;
-        maxAngularVel = parameters.Item3;
-        initialSize = parameters.Item4;
-        asteroidScale = parameters.Item5;
-        numSmallerAsteroidsToSpawn = parameters.Item6;
-
-        // Solo ejecutar la mitosis si es el asteroide inicial
-        if (isTheBigPapa)
+        transform.localScale = Vector3.one * size * AsteraX.AsteroidsSO.asteroidScale;
+        if (parentIsAsteroid)
         {
-            Mitosis(parentPosition, initialSize);
+            InitAsteroidChild();
         }
-        impulso();
-    }
-
-    void Update()
-    {
-
-    }
-
-    void impulso()
-    {
-        var rigidbody = GetComponent<Rigidbody>();
-        if (rigidbody != null)
+        else
         {
-            float velocidad = Random.Range(minVel, maxVel);
+            InitAsteroidParent();
+        }
 
-            // Calcular una dirección aleatoria en 3D (en una esfera)
-            Vector3 direccion = Random.onUnitSphere;
+        // Spawn child Asteroids
+        if (size > 1)
+        {
+            Asteroid ast;
+            for (int i = 0; i < AsteraX.AsteroidsSO.numSmallerAsteroidsToSpawn; i++)
+            {
+                ast = SpawnAsteroid();
+                ast.size = size - 1;
+                ast.transform.SetParent(transform);
+                Vector3 relPos = Random.onUnitSphere / 2;
+                ast.transform.rotation = Random.rotation;
+                ast.transform.localPosition = relPos;
 
-            rigidbody.velocity = direccion * velocidad;
-
-            // Aplicar una rotación aleatoria, pero más lenta para asteroides más grandes
-            float sizeFactor = transform.localScale.x;
-            rigidbody.angularVelocity = Random.insideUnitSphere * maxAngularVel / sizeFactor;
+                ast.gameObject.name = gameObject.name + "_" + i.ToString("00");
+            }
         }
     }
 
-    void OnTriggerEnter(Collider other)
+    private void OnDestroy()
     {
-        if (other.CompareTag("Bullet"))
+        AsteraX.RemoveAsteroid(this);
+    }
+
+    public void InitAsteroidParent()
+    {
+#if DEBUG_Asteroid_ShotOffscreenDebugLines
+		Debug.LogWarning(gameObject.name+" InitAsteroidParent() "+Time.time);
+#endif
+        offScreenWrapper.enabled = true;
+        rigid.isKinematic = false;
+        // Snap this GameObject to the z=0 plane
+        Vector3 pos = transform.position;
+        pos.z = 0;
+        transform.position = pos;
+        // Initialize the velocity for this Asteroid
+        InitVelocity();
+    }
+
+    public void InitAsteroidChild()
+    {
+        offScreenWrapper.enabled = false;
+        rigid.isKinematic = true;
+        // Make use of the ComponentDivision extension method in Vector3Extensions
+        transform.localScale = transform.localScale.ComponentDivide(transform.parent.lossyScale);
+    }
+
+    public void InitVelocity()
+    {
+        Vector3 vel;
+
+        // The initial velocity depends on whether the Asteroid is currently off screen or not
+        if (ScreenBounds.OOB(transform.position))
         {
-            GameObject bullet = other.gameObject;
-            Destroy(bullet);
-            Impacto();
+            // If the Asteroid is out of bounds, just point it toward a point near the center of the sceen
+            vel = ((Vector3)Random.insideUnitCircle * 4) - transform.position;
+            vel.Normalize();
+
+#if DEBUG_Asteroid_TestOOBVel
+            Debug.LogWarning("Asteroid:InitVelocity() - " + gameObject.name + " is OOB. Vel is: " + vel);
+            EditorApplication.isPaused = true;
+#endif
+
+#if DEBUG_Asteroid_ShotOffscreenDebugLines
+			Debug.DrawLine(transform.position, transform.position+vel, Color.red, 60);
+			Debug.DrawLine(transform.position+Vector3.down, transform.position+Vector3.up, Color.cyan, 60);
+            Debug.DrawLine(transform.position+Vector3.left, transform.position+Vector3.right, Color.cyan, 60);
+			trackOffscreen = true;
+			trackOffscreenOrigin = transform.position;
+#endif
+
+        }
+        else
+        {
+            // If in bounds, choose a random direction, and make sure that when you Normalize it, it doesn't
+            //  have a length of 0 (which might happen if Random.insideUnitCircle returned [0,0,0].
+            do
+            {
+                vel = Random.insideUnitCircle;
+                vel.Normalize();
+            } while (Mathf.Approximately(vel.magnitude, 0f));
         }
 
-        if (other.CompareTag("Player"))
+        // Multiply the unit length of vel by the correct speed (randomized) for this size of Asteroid
+        vel = vel * Random.Range(AsteraX.AsteroidsSO.minVel, AsteraX.AsteroidsSO.maxVel) / (float)size;
+        rigid.velocity = vel;
+
+        rigid.angularVelocity = Random.insideUnitSphere * AsteraX.AsteroidsSO.maxAngularVel;
+    }
+
+#if DEBUG_Asteroid_ShotOffscreenDebugLines
+	private void FixedUpdate()
+	{
+		if (trackOffscreen) {
+			Debug.DrawLine(trackOffscreenOrigin, transform.position, Color.yellow, 0.1f);
+		}
+	}
+#endif
+
+    // NOTE: Allowing parentIsAsteroid and parentAsteroid to call GetComponent<> every
+    //  time is inefficient, however, this only happens when a bullet hits an Asteroid
+    //  which is rarely enough that it isn't a performance hit.
+    bool parentIsAsteroid
+    {
+        get
         {
-            Impacto();
+            return (parentAsteroid != null);
         }
     }
 
-    // Método para generar asteroides hijos
-    void Mitosis(Transform parentPosition, int currentSize)
+    Asteroid parentAsteroid
     {
-        GameObject prefab = AsteroidsScriptableObject.S.GetAsteroidPrefab();
-
-        if (currentSize <= 1)
+        get
         {
-            // Si el tamaño es 1, no generamos más asteroides
+            if (transform.parent != null)
+            {
+                Asteroid parentAsteroid = transform.parent.GetComponent<Asteroid>();
+                if (parentAsteroid != null)
+                {
+                    return parentAsteroid;
+                }
+            }
+            return null;
+        }
+    }
+
+    public void OnCollisionEnter(Collision coll)
+    {
+        // If this is the child of another Asteroid, pass this collision up the chain
+        if (parentIsAsteroid)
+        {
+            parentAsteroid.OnCollisionEnter(coll);
             return;
         }
 
-        for (int i = 0; i < numSmallerAsteroidsToSpawn; i++)
+        if (immune)
         {
-            // Calcular un desplazamiento aleatorio alrededor de la posición del padre
-            Vector3 randomOffset = Random.onUnitSphere * 0.5f;
+            return;
+        }
 
-            // Crear un nuevo asteroide con un ligero desplazamiento aleatorio
-            GameObject newAsteroid = Instantiate(prefab, parentPosition.position + randomOffset, Random.rotation);
-            newAsteroid.transform.SetParent(parentPosition);
+        GameObject otherGO = coll.gameObject;
 
-            // Ajustar la escala del nuevo asteroide 
-            int childSize = currentSize - 1; 
-            newAsteroid.transform.localScale = Vector3.one * childSize * asteroidScale;
-            
-            string daddyName = newAsteroid.transform.parent.name;
-            
-            newAsteroid.name = daddyName + "-" + i;
-
-            // Desactivar el componente offScreenWrapper
-            var offScreenWrapper = newAsteroid.GetComponent<OffScreenWrapper>();
-            if (offScreenWrapper != null)
+        if (otherGO.tag == "Bullet" || otherGO.transform.root.gameObject.tag == "Player")
+        {
+            if (otherGO.tag == "Bullet")
             {
-                offScreenWrapper.enabled = false;
+                Destroy(otherGO);
             }
 
-            // Activar el componente Rigidbody como Kinematic
-            var rigidbody = newAsteroid.GetComponent<Rigidbody>();
-            if (rigidbody != null)
+            if (size > 1)
             {
-                rigidbody.isKinematic = true;
+                // Detach the children Asteroids
+                Asteroid[] children = GetComponentsInChildren<Asteroid>();
+                for (int i = 0; i < children.Length; i++)
+                {
+                    children[i].immune = true;
+                    if (children[i] == this || children[i].transform.parent != transform)
+                    {
+                        continue;
+                    }
+                    children[i].transform.SetParent(null, true);
+                    children[i].InitAsteroidParent();
+                }
             }
 
-            // Desactovar el componente Collider
-            var collider = newAsteroid.GetComponent<Collider>();
-            if (collider != null)
-            {
-                collider.enabled = false;
-            }
-
-            // Marcar el nuevo asteroide como no inicial para que no haga la mitosis
-            var asteroidScript = newAsteroid.GetComponent<Asteroid>();
-            if (asteroidScript != null)
-            {
-                asteroidScript.isTheBigPapa = false;
-            }
-
-            // Llamar a la mitosis para la creacion de los nietos 
-            Mitosis(newAsteroid.transform, childSize);
+            Destroy(gameObject);
         }
     }
 
-    void Impacto()
+
+    private void Update()
     {
-        // Obtener todos los hijos directos del asteroide impactado
-        List<Transform> children = new List<Transform>();
-        foreach (Transform child in transform)
-        {
-            children.Add(child);
-        }
+        immune = false;
+    }
 
-        // Liberar y activar cada hijo
-        for (int i = 0; i < children.Count; i++)
-        {
-            Transform child = children[i];
 
-            // Liberar al hijo del padre
-            child.SetParent(null);
-
-            // Activar el Rigidbody 
-            var rigidbody = child.GetComponent<Rigidbody>();
-            if (rigidbody != null)
-            {
-                rigidbody.isKinematic = false;
-
-                // Aumentar la probabilidad de velocidades más altas para asteroides más pequeños
-                float factorTamaño = 1f / child.localScale.x;
-                float velocidad = Random.Range(minVel * factorTamaño, maxVel * factorTamaño);
-
-                // Calcular una dirección opuesta para cada par de hijos
-                Vector3 direccion = (i % 2 == 0) ? Random.onUnitSphere : -children[i - 1].position.normalized;
-
-                // Aplicar la velocidad en la dirección calculada
-                rigidbody.velocity = direccion * velocidad;
-
-                // Aplicar una rotación aleatoria, pero más lenta para asteroides más grandes
-                float sizeFactor = child.localScale.x;
-                rigidbody.angularVelocity = Random.insideUnitSphere * maxAngularVel / sizeFactor;
-            }
-
-            // Activar el Collider 
-            var collider = child.GetComponent<Collider>();
-            if (collider != null)
-            {
-                collider.enabled = true;
-            }
-
-            // Activar el OffScreenWrapper 
-            var offScreenWrapper = child.GetComponent<OffScreenWrapper>();
-            if (offScreenWrapper != null)
-            {
-                offScreenWrapper.enabled = true;
-            }
-        }
-
-        // Destruir el asteroide padre
-        Destroy(gameObject);
+    static public Asteroid SpawnAsteroid()
+    {
+        GameObject aGO = Instantiate<GameObject>(AsteraX.AsteroidsSO.GetAsteroidPrefab());
+        Asteroid ast = aGO.GetComponent<Asteroid>();
+        return ast;
     }
 }

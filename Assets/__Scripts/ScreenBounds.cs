@@ -3,15 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// NOTE: If Camera.main is going to move or rotate at all, then it will need to
+//  have a Rigidbody attached so that the physics engine properly updates the 
+//  position and rotation of this BoxCollider.
 
 /// <summary>
-/// <para>This class should be attached to a child of Camera.main. It triggers various
-///  behaviors to happen when a GameObject exits the screen.</para>
-/// <para>NOTE: Camera.main must be orthographic.</para>
-/// <para>NOTE: This GameObject must have a BoxCollider attached.</para>
-/// <para>NOTE: If Camera.main is going to move or rotate over time, then it will need
-///  to have a Rigidbody attached so that the physics engine properly updates the 
-///  position and rotation of this BoxCollider.</para>
+/// This class should be attached to a child of Camera.main. It triggers various
+///  behaviors to happen when a GameObject exits the screen.<para/>
+/// NOTE: Camera.main must be orthographic.<para/>
+/// NOTE: This GameObject must have a BoxCollider attached.
 /// </summary>
 [RequireComponent(typeof(BoxCollider))]
 public class ScreenBounds : MonoBehaviour
@@ -35,8 +35,8 @@ public class ScreenBounds : MonoBehaviour
         // Need to make sure that the camera is Orthographic for this to work
         if (!cam.orthographic)
         {
-            Debug.LogError("ScaleToCamera:Start() - Camera.main needs to be orthograhic " +
-                           "for ScaleToCamera to work, but this camera is not orthograhic.");
+            Debug.LogError("ScaleToCamera:Start() - Camera.main needs to be orthographic " +
+                           "for ScaleToCamera to work, but this camera is not orthographic.");
         }
 
         // No need to check whether boxColl is null because of RequireComponent above.
@@ -83,8 +83,9 @@ public class ScreenBounds : MonoBehaviour
 
         // This line makes use of the Vector3 extension method defined in Vector3Extensions
         scaleColl = scaleDesired.ComponentDivide(cachedCamScale);
-        // Assigning the result of this ComponentDivide to a variable makes 
-        //  debugging easier because you can see the value before it is returned.
+        // Assigning the result of this ComponentDivide to a variable does take a little more
+        //  memory, but it also makes debugging easier because you can see the value of
+        //  scaleColl before it is returned.
         return scaleColl;
     }
 

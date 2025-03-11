@@ -22,8 +22,7 @@ public class TiltWithVelocity : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        // Mathf.Tan() is a little expensive, so we can cache the result instead 
-        //  of calculating each FixedUpdate.
+        // Mathf.Tan() is a little expensive, so we can cache the result instead of calculating each FixedUpdate.
         if (degrees != prevDegrees)
         {
             prevDegrees = degrees;

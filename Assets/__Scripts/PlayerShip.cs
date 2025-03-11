@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿#define DEBUG_PlayerShip_RespawnNotifications
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
@@ -35,8 +37,7 @@ public class PlayerShip : MonoBehaviour
     {
         S = this;
 
-        // NOTE: We don't need to check whether or not rigid is null because of 
-        //  [RequireComponent( typeof(Rigidbody) )] above
+        // NOTE: We don't need to check whether or not rigid is null because of [RequireComponent()] above
         rigid = GetComponent<Rigidbody>();
     }
 
@@ -82,6 +83,14 @@ public class PlayerShip : MonoBehaviour
         get
         {
             return S.shipSpeed;
+        }
+    }
+    
+	static public Vector3 POSITION
+    {
+        get
+        {
+            return S.transform.position;
         }
     }
 }
