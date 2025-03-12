@@ -29,14 +29,19 @@ public class Asteroid : MonoBehaviour
     Vector3 trackOffscreenOrigin;
 #endif
 
+    private PlayerShip playerShip;
+    
     private void Awake()
     {
         rigid = GetComponent<Rigidbody>();
         offScreenWrapper = GetComponent<OffScreenWrapper>();
+        
     }
 
     void Start()
     {
+        playerShip = PlayerShip.S;
+
         AsteraX.AddAsteroid(this); // Agrega el asteroide a la lista global
 
         transform.localScale = Vector3.one * size * AsteraX.AsteroidsSO.asteroidScale;
@@ -77,6 +82,7 @@ public class Asteroid : MonoBehaviour
 #if DEBUG_Asteroid_ShotOffscreenDebugLines
         Debug.LogWarning(gameObject.name + " InitAsteroidParent() " + Time.time);
 #endif
+        tag = "Asteroid";
         offScreenWrapper.enabled = true;
         rigid.isKinematic = false;
         
@@ -141,6 +147,7 @@ public class Asteroid : MonoBehaviour
             return null;
         }
     }
+    
 
     public void OnCollisionEnter(Collision coll)
     {
@@ -164,10 +171,16 @@ public class Asteroid : MonoBehaviour
                 Destroy(otherGO);
             }
 
+            if (otherGO.tag != "Bullet" && transform.parent == null)
+            { 
+                playerShip.Impact();
+            }
+            
             if (size > 1)
             {
                 // Separa los asteroides hijos cuando el padre es destruido
                 Asteroid[] children = GetComponentsInChildren<Asteroid>();
+                playerShip.Destroyed();
                 for (int i = 0; i < children.Length; i++)
                 {
                     children[i].immune = true;
@@ -183,6 +196,8 @@ public class Asteroid : MonoBehaviour
             Destroy(gameObject); // Destruye este asteroide
         }
     }
+    
+    
 
     private void Update()
     {

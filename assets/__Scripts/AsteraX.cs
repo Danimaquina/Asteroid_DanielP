@@ -78,6 +78,15 @@ public class AsteraX : MonoBehaviour
 
         ast.transform.position = pos;
         ast.size = asteroidsSO.initialSize; // Asigna el tamaño inicial del asteroide
+
+    }
+    
+    static public Vector3 POSITION
+    {
+        get
+        {
+            return S.transform.position;
+        }
     }
 
     // ---------------- Sección Estática ---------------- //

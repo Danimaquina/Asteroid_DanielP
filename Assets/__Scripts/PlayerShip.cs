@@ -1,5 +1,6 @@
 ﻿#define DEBUG_PlayerShip_RespawnNotifications
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -31,6 +32,10 @@ public class PlayerShip : MonoBehaviour
     public GameObject   bulletPrefab;
 
     Rigidbody           rigid;
+    
+    public UIControlator UIControlator;
+    public int DistanciaSegura;
+    private int value;
 
 
     void Awake()
@@ -64,6 +69,31 @@ public class PlayerShip : MonoBehaviour
         }
     }
 
+    public void Impact()
+    {
+        gameObject.SetActive(false);
+        Damage();
+        Invoke("nextTry", 2);
+        
+    }
+
+    public void Damage()
+    {
+        UIControlator.Hit();
+    }
+
+    public void nextTry()
+    {
+        Vector3 alec;
+        do
+        {
+            alec = ScreenBounds.RANDOM_ON_SCREEN_LOC;
+
+        } while ((alec - AsteraX.POSITION).magnitude < DistanciaSegura);
+        
+        gameObject.SetActive(true);
+        gameObject.transform.position = alec;
+    }
 
     void Fire()
     {
@@ -77,6 +107,12 @@ public class PlayerShip : MonoBehaviour
         go.transform.position = transform.position;
         go.transform.LookAt(mPos3D);
     }
+
+   public void Destroyed()
+   {
+       UIControlator.AugmentScore();
+   }
+
 
     static public float MAX_SPEED
     {

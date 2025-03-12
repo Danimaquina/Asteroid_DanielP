@@ -7,6 +7,8 @@ TagManager:
   - Bullet
   - OnScreenBounds
   - DestroyWithLevelChange
+  - UIController
+  - Asteroid
   layers:
   - Default
   - TransparentFX
