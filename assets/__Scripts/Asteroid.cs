@@ -1,5 +1,4 @@
-﻿// Estas definiciones de depuración se usaron para probar casos en los que algunos asteroides 
-// se perdían fuera de la pantalla.
+﻿// These were used to test a case where some Asteroids were getting lost off screen.
 //#define DEBUG_Asteroid_TestOOBVel 
 //#define DEBUG_Asteroid_ShotOffscreenDebugLines
 
@@ -11,38 +10,31 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-// Requiere que el objeto tenga un Rigidbody y un OffScreenWrapper
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(OffScreenWrapper))]
 public class Asteroid : MonoBehaviour
 {
-    [Header("Configuración Dinámica")]
-    public int size = 3; // Tamaño del asteroide
-    public bool immune = false; // Indica si el asteroide es inmune a colisiones
+    [Header("Set Dynamically")]
+    public int          size = 3;
+    public bool         immune = false;
 
-    Rigidbody rigid; // Referencia al Rigidbody
-    OffScreenWrapper offScreenWrapper; // Referencia al componente que maneja los límites de pantalla
+    Rigidbody           rigid; // protected
+    OffScreenWrapper    offScreenWrapper;
 
 #if DEBUG_Asteroid_ShotOffscreenDebugLines
-    [Header("Depuración de disparos fuera de pantalla")]
-    bool trackOffscreen;
-    Vector3 trackOffscreenOrigin;
+    bool                trackOffscreen;
+    Vector3             trackOffscreenOrigin;
 #endif
-
-    private PlayerShip playerShip;
-    
     private void Awake()
     {
         rigid = GetComponent<Rigidbody>();
         offScreenWrapper = GetComponent<OffScreenWrapper>();
-        
     }
 
+    // Use this for initialization
     void Start()
     {
-        playerShip = PlayerShip.S;
-
-        AsteraX.AddAsteroid(this); // Agrega el asteroide a la lista global
+        AsteraX.AddAsteroid(this);
 
         transform.localScale = Vector3.one * size * AsteraX.AsteroidsSO.asteroidScale;
         if (parentIsAsteroid)
@@ -54,7 +46,7 @@ public class Asteroid : MonoBehaviour
             InitAsteroidParent();
         }
 
-        // Genera asteroides hijos si el tamaño es mayor que 1
+        // Spawn child Asteroids
         if (size > 1)
         {
             Asteroid ast;
@@ -66,6 +58,7 @@ public class Asteroid : MonoBehaviour
                 Vector3 relPos = Random.onUnitSphere / 2;
                 ast.transform.rotation = Random.rotation;
                 ast.transform.localPosition = relPos;
+
                 ast.gameObject.name = gameObject.name + "_" + i.ToString("00");
             }
         }
@@ -76,46 +69,58 @@ public class Asteroid : MonoBehaviour
         AsteraX.RemoveAsteroid(this);
     }
 
-    // Inicializa un asteroide padre con movimiento y colisión activados
     public void InitAsteroidParent()
     {
 #if DEBUG_Asteroid_ShotOffscreenDebugLines
-        Debug.LogWarning(gameObject.name + " InitAsteroidParent() " + Time.time);
+        Debug.LogWarning(gameObject.name+" InitAsteroidParent() "+Time.time);
 #endif
-        tag = "Asteroid";
         offScreenWrapper.enabled = true;
         rigid.isKinematic = false;
-        
-        // Asegura que el asteroide esté en el plano z=0
+        // Snap this GameObject to the z=0 plane
         Vector3 pos = transform.position;
         pos.z = 0;
         transform.position = pos;
-        
-        InitVelocity(); // Asigna una velocidad inicial al asteroide
+        // Initialize the velocity for this Asteroid
+        InitVelocity();
     }
 
-    // Inicializa un asteroide hijo sin movimiento ni colisión
     public void InitAsteroidChild()
     {
         offScreenWrapper.enabled = false;
         rigid.isKinematic = true;
+        // Make use of the ComponentDivision extension method in Vector3Extensions
         transform.localScale = transform.localScale.ComponentDivide(transform.parent.lossyScale);
     }
 
-    // Establece la velocidad inicial del asteroide
     public void InitVelocity()
     {
         Vector3 vel;
 
+        // The initial velocity depends on whether the Asteroid is currently off screen or not
         if (ScreenBounds.OOB(transform.position))
         {
-            // Si el asteroide está fuera de los límites, lo dirige hacia el centro
+            // If the Asteroid is out of bounds, just point it toward a point near the center of the sceen
             vel = ((Vector3)Random.insideUnitCircle * 4) - transform.position;
             vel.Normalize();
+
+#if DEBUG_Asteroid_TestOOBVel
+            Debug.LogWarning("Asteroid:InitVelocity() - " + gameObject.name + " is OOB. Vel is: " + vel);
+            EditorApplication.isPaused = true;
+#endif
+
+#if DEBUG_Asteroid_ShotOffscreenDebugLines
+            Debug.DrawLine(transform.position, transform.position+vel, Color.red, 60);
+            Debug.DrawLine(transform.position+Vector3.down, transform.position+Vector3.up, Color.cyan, 60);
+            Debug.DrawLine(transform.position+Vector3.left, transform.position+Vector3.right, Color.cyan, 60);
+            trackOffscreen = true;
+            trackOffscreenOrigin = transform.position;
+#endif
+
         }
         else
         {
-            // Si está en pantalla, asigna una dirección aleatoria
+            // If in bounds, choose a random direction, and make sure that when you Normalize it, it doesn't
+            //  have a length of 0 (which might happen if Random.insideUnitCircle returned [0,0,0].
             do
             {
                 vel = Random.insideUnitCircle;
@@ -123,34 +128,52 @@ public class Asteroid : MonoBehaviour
             } while (Mathf.Approximately(vel.magnitude, 0f));
         }
 
-        // Ajusta la velocidad según el tamaño del asteroide
+        // Multiply the unit length of vel by the correct speed (randomized) for this size of Asteroid
         vel = vel * Random.Range(AsteraX.AsteroidsSO.minVel, AsteraX.AsteroidsSO.maxVel) / (float)size;
         rigid.velocity = vel;
+
         rigid.angularVelocity = Random.insideUnitSphere * AsteraX.AsteroidsSO.maxAngularVel;
     }
 
-    // Verifica si este asteroide es hijo de otro asteroide
+#if DEBUG_Asteroid_ShotOffscreenDebugLines
+    private void FixedUpdate()
+    {
+        if (trackOffscreen) {
+            Debug.DrawLine(trackOffscreenOrigin, transform.position, Color.yellow, 0.1f);
+        }
+    }
+#endif
+
+    // NOTE: Allowing parentIsAsteroid and parentAsteroid to call GetComponent<> every
+    //  time is inefficient, however, this only happens when a bullet hits an Asteroid
+    //  which is rarely enough that it isn't a performance hit.
     bool parentIsAsteroid
     {
-        get { return (parentAsteroid != null); }
+        get
+        {
+            return (parentAsteroid != null);
+        }
     }
 
-    // Obtiene el asteroide padre si existe
     Asteroid parentAsteroid
     {
         get
         {
             if (transform.parent != null)
             {
-                return transform.parent.GetComponent<Asteroid>();
+                Asteroid parentAsteroid = transform.parent.GetComponent<Asteroid>();
+                if (parentAsteroid != null)
+                {
+                    return parentAsteroid;
+                }
             }
             return null;
         }
     }
-    
 
     public void OnCollisionEnter(Collision coll)
     {
+        // If this is the child of another Asteroid, pass this collision up the chain
         if (parentIsAsteroid)
         {
             parentAsteroid.OnCollisionEnter(coll);
@@ -169,18 +192,13 @@ public class Asteroid : MonoBehaviour
             if (otherGO.tag == "Bullet")
             {
                 Destroy(otherGO);
+                AsteraX.AddScore(AsteraX.AsteroidsSO.pointsForAsteroidSize[size]);
             }
 
-            if (otherGO.tag != "Bullet" && transform.parent == null)
-            { 
-                playerShip.Impact();
-            }
-            
             if (size > 1)
             {
-                // Separa los asteroides hijos cuando el padre es destruido
+                // Detach the children Asteroids
                 Asteroid[] children = GetComponentsInChildren<Asteroid>();
-                playerShip.Destroyed();
                 for (int i = 0; i < children.Length; i++)
                 {
                     children[i].immune = true;
@@ -192,22 +210,35 @@ public class Asteroid : MonoBehaviour
                     children[i].InitAsteroidParent();
                 }
             }
-            
-            Destroy(gameObject); // Destruye este asteroide
+
+            InstantiateParticleSystem();
+            Destroy(gameObject);
         }
     }
-    
-    
+
+    void InstantiateParticleSystem() {
+        GameObject particleGO = Instantiate<GameObject>(AsteraX.AsteroidsSO.GetAsteroidParticlePrefab(),
+                                                        transform.position, Quaternion.identity);
+        ParticleSystem particleSys = particleGO.GetComponent<ParticleSystem>();
+        ParticleSystem.MainModule main = particleSys.main;
+        main.startLifetimeMultiplier = size * 0.5f;
+        ParticleSystem.EmissionModule emitter = particleSys.emission;
+        ParticleSystem.Burst burst = emitter.GetBurst(0);
+        ParticleSystem.MinMaxCurve burstCount = burst.count;
+        burstCount.constant = burstCount.constant * size;
+        burst.count = burstCount;
+        emitter.SetBurst(0, burst);
+    }
 
     private void Update()
     {
-        immune = false; // Restablece la inmunidad en cada fotograma
+        immune = false;
     }
 
-    // Método estático para instanciar un nuevo asteroide
     static public Asteroid SpawnAsteroid()
     {
         GameObject aGO = Instantiate<GameObject>(AsteraX.AsteroidsSO.GetAsteroidPrefab());
-        return aGO.GetComponent<Asteroid>();
+        Asteroid ast = aGO.GetComponent<Asteroid>();
+        return ast;
     }
 }

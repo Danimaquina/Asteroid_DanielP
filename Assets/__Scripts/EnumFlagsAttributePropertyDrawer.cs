@@ -5,34 +5,29 @@ using UnityEngine;
 using UnityEditor;
 #endif
 using System;
-
-// Gracias al usuario de Unity Aqibsadiq por este código:
+// Thanks to Unity user Aqibsadiq's post with this code:
 // https://forum.unity.com/threads/multiple-enum-select-from-inspector.184729/
 
 /// <summary>
-/// Este atributo personalizado permite editar enums en el Inspector de Unity
-/// utilizando una máscara de bits (MaskField), similar a cómo se editan las capas de física.
+/// This sets up a [EnumFlags] compiler attribute that tells Unity to allow us to 
+///  edit any enum with that tags using the MaskField (the same type of enum editor
+///  that is used for Physics Layers).
 /// </summary>
 public class EnumFlagsAttribute : PropertyAttribute
 {
     public EnumFlagsAttribute() { }
 }
-
 #if UNITY_EDITOR 
-/// <summary>
-/// Clase personalizada para manejar la visualización del atributo [EnumFlags] en el Inspector de Unity.
-/// </summary>
-[CustomPropertyDrawer(typeof(EnumFlagsAttribute))]
-public class EnumFlagsAttributePropertyDrawer : PropertyDrawer 
-{
+[CustomPropertyDrawer( typeof(EnumFlagsAttribute) )]
+public class EnumFlagsAttributePropertyDrawer : PropertyDrawer {
     public override void OnGUI(Rect _position, SerializedProperty _property, GUIContent _label)
     {
-        // Se eliminan "none" y "all" de la lista porque ya existen las opciones "Nothing" y "Everything".
+        // Remove all and none from the list because Nothing and Everything already exist
         List<string> propsToShow = new List<string>(_property.enumNames);
-        propsToShow.Remove("none"); // Si "none" está en la lista, se elimina.
+        propsToShow.Remove("none"); // If "none" was in the List, it is removed.
         propsToShow.Remove("all");
 
-        // Se muestra la MaskField en el Inspector para permitir selección múltiple de enums.
+        // Show the MaskField in the Inspector
         _property.intValue = EditorGUI.MaskField(_position, _label, _property.intValue, propsToShow.ToArray());
     }
 }

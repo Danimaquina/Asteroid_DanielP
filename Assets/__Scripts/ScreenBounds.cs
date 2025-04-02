@@ -35,8 +35,8 @@ public class ScreenBounds : MonoBehaviour
         // Need to make sure that the camera is Orthographic for this to work
         if (!cam.orthographic)
         {
-            Debug.LogError("ScaleToCamera:Start() - Camera.main needs to be orthographic " +
-                           "for ScaleToCamera to work, but this camera is not orthographic.");
+            Debug.LogError("ScaleToCamera:Start() - Camera.main needs to be orthograhic " +
+                           "for ScaleToCamera to work, but this camera is not orthograhic.");
         }
 
         // No need to check whether boxColl is null because of RequireComponent above.
