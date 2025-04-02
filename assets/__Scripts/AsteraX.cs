@@ -47,7 +47,6 @@ public class AsteraX : MonoBehaviour
         gameOver = 16,  // 00010000
         all = 0xFFFFFFF // 11111111111111111111111111111111
     }
-
     [Header("Set in Inspector")]
     [Tooltip("This sets the AsteroidsScriptableObject to be used throughout the game.")]
     public AsteroidsScriptableObject asteroidsSO;
@@ -60,6 +59,9 @@ public class AsteraX : MonoBehaviour
     [Tooltip("This private field shows the game state in the Inspector and is set by the "
         + "GAME_STATE_CHANGE_DELEGATE whenever GAME_STATE changes.")]
     protected eGameState  _gameState;
+    
+
+
 
     private void Awake()
     {
@@ -128,8 +130,6 @@ public class AsteraX : MonoBehaviour
         ast.transform.position = pos;
         ast.size = asteroidsSO.initialSize;
     }
-
-
     
 	public void EndGame()
     {
