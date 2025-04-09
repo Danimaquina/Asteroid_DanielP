@@ -59,6 +59,10 @@ public class PlayerShip : MonoBehaviour
 
     void Update()
     {
+        if (AsteraX.GAME_STATE == AsteraX.eGameState.mainMenu || AsteraX.GAME_STATE == AsteraX.eGameState.pause) {
+            return;
+        }
+        
         // Using Horizontal and Vertical axes to set velocity
         float aX = CrossPlatformInputManager.GetAxis("Horizontal");
         float aY = CrossPlatformInputManager.GetAxis("Vertical");

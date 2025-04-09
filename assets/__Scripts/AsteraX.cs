@@ -4,6 +4,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class AsteraX : MonoBehaviour
 {
@@ -43,6 +44,7 @@ public class AsteraX : MonoBehaviour
         mainMenu = 1,   // 00000001
         preLevel = 2,   // 00000010
         level = 4,      // 00000100
+        pause = 5,
         postLevel = 8,  // 00001000
         gameOver = 16,  // 00010000
         all = 0xFFFFFFF // 11111111111111111111111111111111
@@ -60,9 +62,10 @@ public class AsteraX : MonoBehaviour
         + "GAME_STATE_CHANGE_DELEGATE whenever GAME_STATE changes.")]
     protected eGameState  _gameState;
     
+    public Toggle pauseToggle;
 
 
-
+    
     private void Awake()
     {
 #if DEBUG_AsteraX_LogMethods
@@ -96,20 +99,27 @@ public class AsteraX : MonoBehaviour
 
     void Start()
     {
+        pauseToggle.onValueChanged.AddListener(delegate { PlayPauseToggle(); });
+        
 #if DEBUG_AsteraX_LogMethods
         Debug.Log("AsteraX:Start()");
 #endif
+    }
 
+    public void IniciaProcesos()
+    {
         ASTEROIDS = new List<Asteroid>();
-		AddScore(0);
-        
+        AddScore(0);
+
         // Spawn the parent Asteroids, child Asteroids are taken care of by them
         for (int i = 0; i < 3; i++)
         {
             SpawnParentAsteroid(i);
         }
+
         GAME_STATE = eGameState.level;
     }
+
 
 
     void SpawnParentAsteroid(int i)
@@ -130,13 +140,33 @@ public class AsteraX : MonoBehaviour
         ast.transform.position = pos;
         ast.size = asteroidsSO.initialSize;
     }
-    
+
+    public void StartGame()
+    {
+        IniciaProcesos();
+    }
 	public void EndGame()
     {
         GAME_STATE = eGameState.gameOver;
         Invoke("ReloadScene", DELAY_BEFORE_RELOADING_SCENE);
     }
 
+    public void PlayPauseToggle()
+    {
+        if (pauseToggle.isOn)
+        {
+            GAME_STATE = eGameState.pause;
+
+            Time.timeScale = 0f;
+        }
+        else
+        {
+            GAME_STATE = eGameState.level;
+
+            Time.timeScale = 1f;
+        }
+    }
+    
     void ReloadScene()
     {
         // Reload the scene to restart the game

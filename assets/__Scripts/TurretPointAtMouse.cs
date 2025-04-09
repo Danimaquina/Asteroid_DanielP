@@ -17,6 +17,9 @@ public class TurretPointAtMouse : MonoBehaviour {
     // Update is called even when the game is paused, which I think will look nice in the pause window.
     void Update()
     {
+        if (AsteraX.GAME_STATE == AsteraX.eGameState.mainMenu || AsteraX.GAME_STATE == AsteraX.eGameState.pause) {
+            return;
+        }
         PointAtMouse();
     }
 
