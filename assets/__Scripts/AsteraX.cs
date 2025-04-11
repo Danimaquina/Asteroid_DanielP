@@ -1,10 +1,12 @@
 ﻿//#define DEBUG_AsteraX_LogMethods
 //#define DEBUG_AsteraX_RespawnNotifications
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class AsteraX : MonoBehaviour
 {
@@ -22,6 +24,8 @@ public class AsteraX : MonoBehaviour
     
     const float MIN_ASTEROID_DIST_FROM_PLAYER_SHIP = 5;
     const float DELAY_BEFORE_RELOADING_SCENE = 4;
+    const float DELAY_FOR_NEXT_LEVEL = 2;
+
 
 	public delegate void CallbackDelegate(); // Set up a generic delegate type.
     static public CallbackDelegate GAME_STATE_CHANGE_DELEGATE;
@@ -45,6 +49,7 @@ public class AsteraX : MonoBehaviour
         preLevel = 2,   // 00000010
         level = 4,      // 00000100
         pause = 5,
+        transition = 6,
         postLevel = 8,  // 00001000
         gameOver = 16,  // 00010000
         all = 0xFFFFFFF // 11111111111111111111111111111111
@@ -55,6 +60,9 @@ public class AsteraX : MonoBehaviour
 
     [Header("This will be set by Remote Settings")]
     public string levelProgression = "1:3/2,2:4/2,3:3/3,4:4/3,5:5/3,6:3/4,7:4/4,8:5/4,9:6/4,10:3/5";
+    
+    static public int numAsteroidesPadres;
+    static public int numAsteroidesHijos;
 
     [Header("These reflect static fields and are otherwise unused")]
     [SerializeField]
@@ -63,27 +71,16 @@ public class AsteraX : MonoBehaviour
     protected eGameState  _gameState;
     
     public Toggle pauseToggle;
-
-
     
+    static public int level = 1;
     private void Awake()
     {
 #if DEBUG_AsteraX_LogMethods
         Debug.Log("AsteraX:Awake()");
 #endif
-
         S = this;
-        
-		GAME_STATE_CHANGE_DELEGATE += delegate ()
-        {
-            // This is an example of a C# anonymous delegate. It's used to set the state of
-            //  _gameState every time GAME_STATE changes.
-            // Anonymous delegates like this do create "closures" like "this" below, which 
-            //  stores the value of this when the anonymous delegate was created. Closures
-            //  can be slow, but in this case, it is so rarely used that it doesn't matter.
-            this._gameState = AsteraX.GAME_STATE;
-            S._gameState = AsteraX.GAME_STATE;
-        };
+        ASTEROIDS = new List<Asteroid>(); 
+        BULLETS = new List<Bullet>();    
         
 		// This strange use of _gameState as an intermediary in the following lines 
         //  is solely to stop the Warning from popping up in the Console telling you 
@@ -109,18 +106,20 @@ public class AsteraX : MonoBehaviour
     public void IniciaProcesos()
     {
         ASTEROIDS = new List<Asteroid>();
+
+        CaracterOfLevel(level);
+
         AddScore(0);
 
         // Spawn the parent Asteroids, child Asteroids are taken care of by them
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < numAsteroidesPadres; i++)
         {
             SpawnParentAsteroid(i);
         }
 
         GAME_STATE = eGameState.level;
     }
-
-
+    
 
     void SpawnParentAsteroid(int i)
     {
@@ -167,16 +166,68 @@ public class AsteraX : MonoBehaviour
         }
     }
     
-    void ReloadScene()
+    static public void CaracterOfLevel(int level)
     {
-        // Reload the scene to restart the game
-        // Note: This exposes a long-time Unity bug where reloading the scene 
-        //  during gameplay within the Editor causes the lighting to all go 
-        //  dark and the engine to think that it needs to rebuild the lighting.
-        //  This bug does not cause any issues outside of the Editor.
-        UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+        string[] levels = S.levelProgression.Split(',');
+
+        foreach (string lvl in levels)
+        {
+            string[] parts = lvl.Split(':');
+            int lvlNumber = int.Parse(parts[0]);
+
+            if (lvlNumber == level)
+            {
+                string[] numbers = parts[1].Split('/');
+                numAsteroidesPadres = int.Parse(numbers[0]);
+                numAsteroidesHijos = int.Parse(numbers[1]);
+                return;
+            }
+        }
+
+        // Si no encuentra el nivel
+        Debug.LogWarning("Nivel no encontrado en levelProgression");
+        numAsteroidesPadres = 0;
+        numAsteroidesHijos = 0;
     }
 
+    
+    void ReloadScene()
+    {
+        // Detén todas las corrutinas para evitar comportamientos inesperados
+        StopAllCoroutines();
+    
+        // Destruye todos los asteroides antes de recargar
+        Asteroid[] allAsteroids = GameObject.FindObjectsOfType<Asteroid>();
+        foreach (Asteroid ast in allAsteroids)
+        {
+            Destroy(ast.gameObject);
+        }
+    
+        // Reinicia todas las variables del juego
+        SCORE = 0;
+        level = 0;
+        ASTEROIDS = new List<Asteroid>();
+        BULLETS = new List<Bullet>();
+        _GAME_STATE = eGameState.mainMenu;
+    
+        // Limpia delegados
+        GAME_STATE_CHANGE_DELEGATE = null;
+    
+        // Restaura el tiempo
+        Time.timeScale = 1f;
+    
+        // Recarga la escena de forma asíncrona para mayor estabilidad
+        StartCoroutine(ReloadSceneAsync());
+    }
+
+    IEnumerator ReloadSceneAsync()
+    {
+        // Espera un frame para que todas las destrucciones se completen
+        yield return null;
+    
+        // Recarga la escena
+        UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+    }
 
 
     // ---------------- Static Section ---------------- //
@@ -256,12 +307,57 @@ public class AsteraX : MonoBehaviour
             ASTEROIDS.Add(asteroid);
         }
     }
+    
     static public void RemoveAsteroid(Asteroid asteroid)
     {
+        if (ASTEROIDS == null) return;
+        
         if (ASTEROIDS.IndexOf(asteroid) != -1)
         {
             ASTEROIDS.Remove(asteroid);
         }
+        ComprobacionAsteroid();  
+    }
+
+    static void ComprobacionAsteroid()
+    {
+        // Verifica si hay asteroides activos en la escena
+        if (AreAllAsteroidsDestroyed())
+        {
+            level++;
+            GAME_STATE = eGameState.transition;
+            S.Invoke("StartNextLevel", DELAY_FOR_NEXT_LEVEL);
+        }
+    }
+
+// Método para verificar asteroides en la escena
+    static private bool AreAllAsteroidsDestroyed()
+    {
+        // Busca todos los asteroides activos en la escena
+        Asteroid[] activeAsteroids = GameObject.FindObjectsOfType<Asteroid>();
+    
+        // Filtra solo los asteroides padres 
+        foreach (Asteroid ast in activeAsteroids)
+        {
+            if (ast.transform.parent == null) 
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void StartNextLevel()
+    {
+        // Limpiar cualquier asteroide residual 
+        Asteroid[] remainingAsteroids = GameObject.FindObjectsOfType<Asteroid>();
+        foreach (Asteroid ast in remainingAsteroids)
+        {
+            Destroy(ast.gameObject);
+        }
+    
+        GAME_STATE = eGameState.level;
+        IniciaProcesos();
     }
 
     

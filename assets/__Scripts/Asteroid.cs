@@ -14,6 +14,7 @@ using UnityEditor;
 [RequireComponent(typeof(OffScreenWrapper))]
 public class Asteroid : MonoBehaviour
 {
+    
     [Header("Set Dynamically")]
     public int          size = 3;
     public bool         immune = false;
@@ -50,7 +51,7 @@ public class Asteroid : MonoBehaviour
         if (size > 1)
         {
             Asteroid ast;
-            for (int i = 0; i < AsteraX.AsteroidsSO.numSmallerAsteroidsToSpawn; i++)
+            for (int i = 0; i < AsteraX.numAsteroidesHijos; i++)
             {
                 ast = SpawnAsteroid();
                 ast.size = size - 1;
@@ -66,6 +67,16 @@ public class Asteroid : MonoBehaviour
 
     private void OnDestroy()
     {
+        // Verifica que el juego no esté en proceso de recarga
+        if (AsteraX.GAME_STATE == AsteraX.eGameState.gameOver || 
+            AsteraX.GAME_STATE == AsteraX.eGameState.none)
+        {
+            return;
+        }
+    
+        // Verificación adicional de seguridad
+        if (this == null || gameObject == null) return;
+    
         AsteraX.RemoveAsteroid(this);
     }
 
